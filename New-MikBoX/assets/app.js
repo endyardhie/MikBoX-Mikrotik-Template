@@ -177,18 +177,57 @@
       })
       .catch(function () { /* MikBoX unreachable: shop stays hidden, login still works */ });
   }
+  // RouterOS durations ("1w2d3h4m5s", "8m30s") → seconds; null when empty/unknown.
+  function seconds(s) {
+    var m = /^(?:(\d+)w)?(?:(\d+)d)?(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?$/.exec(String(s || '').trim());
+    if (!s || !m || m[0] === '') return null;
+    return (+m[1] || 0) * 604800 + (+m[2] || 0) * 86400 + (+m[3] || 0) * 3600 + (+m[4] || 0) * 60 + (+m[5] || 0);
+  }
+  function duration(sec) {
+    var d = Math.floor(sec / 86400), h = Math.floor(sec % 86400 / 3600), m = Math.floor(sec % 3600 / 60), out = [];
+    if (d) out.push(d + ' hari');
+    if (h) out.push(h + ' jam');
+    if (m) out.push(m + ' menit');
+    return out.length ? out.join(' ') : '< 1 menit';
+  }
+  function setTimeLeft(text) {
+    var el = $('timeLeft');
+    if (!el) return;
+    if (text) el.querySelector('b').textContent = text; else el.parentNode.removeChild(el);
+  }
+  function loadTimeLeft(base, tries) {
+    if (!window.fetch) return setTimeLeft('');
+    fetch(base + '/shop/api/voucher.php?' + query({ s: C.mikbox.idToko, u: HS.username, mac: HS.mac }))
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        if (d && d.left !== null && d.left !== undefined) {
+          var end = Date.now() + d.left * 1000;
+          var tick = function () { var s = Math.round((end - Date.now()) / 1000); setTimeLeft(s > 0 ? duration(s) : 'Habis'); };
+          tick(); setInterval(tick, 30000);
+        } else if (d && d.pending && tries < 3) {
+          setTimeout(function () { loadTimeLeft(base, tries + 1); }, 4000);   // expiry is written ~5 s after first login
+        } else {
+          setTimeLeft('');
+        }
+      })
+      .catch(function () { setTimeLeft(''); });
+  }
   function rupiah(n) { return 'Rp' + String(n | 0).replace(/\B(?=(\d{3})+(?!\d))/g, '.'); }
 
   /* ---------- status page ---------- */
   function initStatus() {
     $('voucher').textContent = HS.username || '-';
+    // Router knows the time left only for limit-uptime vouchers; MikBoX validity lives in the user comment.
+    var left = seconds(HS.timeLeft), base = mikboxBase();
     var rows = [
-      ['Sisa waktu', HS.timeLeft], ['Sisa kuota', HS.bytesLeft], ['Lama terhubung', HS.uptime],
+      ['Sisa waktu', left !== null ? duration(left) : (base && HS.username ? '…' : ''), '', 'timeLeft'],
+      ['Sisa kuota', HS.bytesLeft === 'unlimited' ? 'Tanpa batas' : HS.bytesLeft], ['Lama terhubung', HS.uptime ? duration(seconds(HS.uptime)) : ''],
       ['Unduh / Unggah', HS.bytesOut && HS.bytesIn ? HS.bytesOut + ' / ' + HS.bytesIn : ''], ['IP', HS.ip], ['MAC', HS.mac, 'wide']
     ];
     $('stats').innerHTML = rows.filter(function (r) { return r[1]; }).map(function (r) {
-      return '<div class="stat' + (r[2] ? ' wide' : '') + '"><small>' + r[0] + '</small><b>' + esc(r[1]) + '</b></div>';
+      return '<div class="stat' + (r[2] ? ' wide' : '') + '"' + (r[3] ? ' id="' + r[3] + '"' : '') + '><small>' + r[0] + '</small><b>' + esc(r[1]) + '</b></div>';
     }).join('');
+    if (left === null && base && HS.username) loadTimeLeft(base, 0);
     var copy = $('copyBtn');
     copy.innerHTML = svg('copy') + 'Salin kode';
     copy.onclick = function () {
