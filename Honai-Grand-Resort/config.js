@@ -14,7 +14,7 @@ var CONFIG = {
   /* ---------- Identitas ---------- */
   namaHotspot: "Honai Grand Resort",
   slogan: "Wi-Fi gratis untuk tamu",
-  logo: "",                          // "" = lambang bawaan. Contoh: "logo.png" (PNG transparan, upload ke folder yang sama)
+  logo: "logo.avif",                          // "" = lambang bawaan. Contoh: "logo.png" (PNG transparan, upload ke folder yang sama)
   pengumuman: "",                    // "" = mati. Contoh: "Gangguan jaringan pukul 22.00–23.00"
   footer: "Honai Grand Resort",
 
@@ -23,8 +23,11 @@ var CONFIG = {
   foto: [                            // foto slideshow (upload ke folder foto/). [] = ilustrasi bawaan
     // "foto/1.jpg",
     // "foto/2.jpg",
+        "foto/1.avif",
+        "foto/2.avif",
+        "foto/3.avif",
   ],
-  gantiFoto: 5,                      // detik per foto
+  gantiFoto: 3,                      // detik per foto
 
   /* ---------- Form login ---------- */
   loginMember: true,                 // true = ada pilihan Username + Password
