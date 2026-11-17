@@ -31,15 +31,8 @@ var CONFIG = {
   mikbox: {
     alamat: "https://mikbox.mediakomputer.com",
     idToko: "",                      // dari MikBoX → Router → Jual Online. "" = bagian beli disembunyikan
+    // Daftar paket & harga diambil otomatis dari MikBoX, tidak perlu ditulis di sini.
   },
-  paket: [
-    // nama  = tulisan di layar
-    // harga = tulisan harga (yang ditagih tetap harga dari MikBoX)
-    // profil = nama user profile hotspot di router (sama persis)
-    { nama: "1 Jam",   harga: "Rp2.000",  profil: "1Jam" },
-    { nama: "1 Hari",  harga: "Rp5.000",  profil: "1Hari" },
-    { nama: "7 Hari",  harga: "Rp25.000", profil: "7Hari" },
-  ],
 
   /* ---------- Kontak ("" = disembunyikan) ---------- */
   whatsapp: "",                      // contoh: "6281234567890"

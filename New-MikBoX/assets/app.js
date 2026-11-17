@@ -157,18 +157,27 @@
     var m = /[?&]mbx_voucher=([A-Za-z0-9_-]{3,32})/.exec(location.search);
     if (m) { user.value = m[1]; submitLogin(m[1], m[1]); return; }
 
-    var base = mikboxBase(), pk = C.paket || [];
-    if (base && pk.length) {
-      $('packages').innerHTML = pk.map(function (p) {
-        return '<div class="pkg"><div class="pkg-ico">' + svg('wifi') + '</div><div class="pkg-info"><b>' + esc(p.nama) + '</b><span>' + esc(p.harga) + '</span></div>'
-          + '<a class="btn btn-primary" href="' + esc(shopUrl(p.profil)) + '">Beli</a></div>';
-      }).join('');
-      var c = $('checkLink');
-      c.href = checkUrl();
-      c.innerHTML = svg('search') + 'Sudah bayar? Cek voucher';
-      $('shop').hidden = false;
-    }
+    // Packages & prices come live from MikBoX (Router → Jual Online); nothing to list in config.js.
+    var base = mikboxBase();
+    if (!base || !window.fetch) return;
+    fetch(base + '/shop/api/packages.php?s=' + encodeURIComponent(C.mikbox.idToko))
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        var pk = (d && d.packages) || [];
+        if (!pk.length) return;
+        $('packages').innerHTML = pk.map(function (p) {
+          var info = rupiah(p.price) + (p.validity ? ' · ' + p.validity : '');
+          return '<div class="pkg"><div class="pkg-ico">' + svg('wifi') + '</div><div class="pkg-info"><b>' + esc(p.title) + '</b><span>' + esc(info) + '</span></div>'
+            + '<a class="btn btn-primary" href="' + esc(shopUrl(p.profile)) + '">Beli</a></div>';
+        }).join('');
+        var c = $('checkLink');
+        c.href = checkUrl();
+        c.innerHTML = svg('search') + 'Sudah bayar? Cek voucher';
+        $('shop').hidden = false;
+      })
+      .catch(function () { /* MikBoX unreachable: shop stays hidden, login still works */ });
   }
+  function rupiah(n) { return 'Rp' + String(n | 0).replace(/\B(?=(\d{3})+(?!\d))/g, '.'); }
 
   /* ---------- status page ---------- */
   function initStatus() {
