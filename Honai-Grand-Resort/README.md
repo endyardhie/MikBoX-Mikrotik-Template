@@ -1,5 +1,7 @@
 # Honai Grand Resort — login page hotspot MikroTik untuk MikBoX
 
+Author: **Endy Ardhie**
+
 Gaya resort/hotel: foto besar (slideshow) di samping panel gradasi dengan logo, tombol emas, dan
 daftar paket seperti kartu tarif kamar. Di HP foto tampil di atas, formulir di bawahnya. Fungsinya
 sama dengan `New-MikBoX`: login voucher/member (CHAP), trial, beli voucher QRIS lewat MikBoX, cek

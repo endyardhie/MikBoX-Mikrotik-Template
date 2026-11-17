@@ -1,5 +1,7 @@
 # New-MikBoX — Login Page Hotspot MikroTik
 
+Author: **Endy Ardhie**
+
 Login page hotspot yang ringan, responsif (HP & desktop), mode terang/gelap, dan terhubung
 dengan **MikBoX** untuk jual voucher online lewat QRIS. Tanpa lisensi pihak ketiga, tanpa CDN
 (tidak butuh walled-garden tambahan selain MikBoX).

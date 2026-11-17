@@ -1,5 +1,6 @@
 /* =====================================================================
  *  NEW-MIKBOX — PENGATURAN LOGIN PAGE (satu-satunya file yang perlu diedit)
+ *  Author : Endy Ardhie
  *
  *  Ubah nilai di antara tanda kutip "...", simpan, lalu upload ulang file ini
  *  ke folder hotspot router (Winbox → Files).

@@ -1,5 +1,7 @@
 # MikBoX MikroTik Template
 
+Author: **Endy Ardhie**
+
 Template login page hotspot MikroTik untuk pengguna **MikBoX** (lisensi MIT).
 
 | Template | Keterangan |
