@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta http-equiv="pragma" content="no-cache">
+<meta http-equiv="expires" content="-1">
+<meta name="theme-color" content="#24104f">
+<title>Status Hotspot</title>
+$(if refresh-timeout)<meta http-equiv="refresh" content="$(refresh-timeout-secs)">$(endif)
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body data-page="status">
+<div class="resort">
+<div class="hero" id="hero" aria-hidden="true"></div>
+<div class="panel"><main class="wrap">
+  <section class="card">
+    <div class="brand" id="brand"></div>
+    <div class="notice" id="notice" hidden></div>
+    <div class="voucher-box"><small>Kode voucher Anda</small><strong id="voucher"></strong></div>
+    <div class="stats" id="stats"></div>
+    <div class="stack">
+      <button class="btn btn-soft" id="copyBtn" type="button"></button>
+      <a class="btn btn-primary" id="browseBtn" hidden>Lanjut browsing</a>
+      <a class="btn btn-ghost" id="logoutBtn"></a>
+    </div>
+  </section>
+  <div class="social" id="social"></div>
+  <p class="foot" id="foot"></p>
+</main></div>
+</div>
+<script>
+  var HS = {
+    username: "$(username)", ip: "$(ip)", mac: "$(mac)", uptime: "$(uptime)",
+    timeLeft: "$(session-time-left)", bytesLeft: "$(remain-bytes-total-nice)",
+    bytesIn: "$(bytes-in)", bytesOut: "$(bytes-out)",
+    logout: "$(link-logout)", orig: "$(link-orig)"
+  };
+</script>
+<script src="config.js"></script>
+<script src="assets/app.js"></script>
+<script src="assets/resort.js"></script>
+</body>
+</html>
