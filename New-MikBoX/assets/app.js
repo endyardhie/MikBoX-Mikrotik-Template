@@ -177,7 +177,10 @@
         var pk = (d && d.packages) || [];
         if (!pk.length) return;
         $('packages').innerHTML = pk.map(function (p) {
-          var info = rupiah(p.price) + (p.validity ? ' · ' + p.validity : '');
+          // "Rp10.000 · 5 jam · aktif 3 hari" (play-time limit) or "Rp5.000 · 1 hari" (validity only)
+          var play = seconds(p.limit_uptime), valid = seconds(p.validity);
+          var info = [rupiah(p.price), play ? duration(play) : '', valid !== null ? (play ? 'aktif ' : '') + duration(valid) : (p.validity || '')]
+            .filter(Boolean).join(' · ');
           return '<div class="pkg"><div class="pkg-ico">' + svg('wifi') + '</div><div class="pkg-info"><b>' + esc(p.title) + '</b><span>' + esc(info) + '</span></div>'
             + '<a class="btn btn-primary" href="' + esc(shopUrl(p.profile)) + '">Beli</a></div>';
         }).join('');
@@ -198,13 +201,19 @@
     var d = Math.floor(sec / 86400), h = Math.floor(sec % 86400 / 3600), m = Math.floor(sec % 3600 / 60), out = [];
     if (d) out.push(d + ' hari');
     if (h) out.push(h + ' jam');
-    if (m) out.push(m + ' menit');
+    if (m && !d) out.push(m + ' menit');   // "2 hari 23 jam" stays on one line
     return out.length ? out.join(' ') : '< 1 menit';
   }
   function setTimeLeft(text) {
     var el = $('timeLeft');
     if (!el) return;
-    if (text) el.querySelector('b').textContent = text; else el.parentNode.removeChild(el);
+    if (text) el.querySelector('b').textContent = text; else { el.parentNode.removeChild(el); evenStats(); }
+  }
+  // Keep IP + MAC paired on the last line: widen the last info tile when the count above them is odd.
+  function evenStats() {
+    var tiles = Array.prototype.filter.call($('stats').children, function (t) { return !t.querySelector('.mono'); });
+    tiles.forEach(function (t) { t.classList.remove('wide'); });
+    if (tiles.length % 2) tiles[tiles.length - 1].classList.add('wide');
   }
   function loadTimeLeft(base, tries) {
     if (!window.fetch) return setTimeLeft('');
@@ -235,17 +244,19 @@
   /* ---------- status page ---------- */
   function initStatus() {
     $('voucher').textContent = HS.username || '-';
-    // Router knows the time left only for limit-uptime vouchers; MikBoX validity lives in the user comment.
-    var left = seconds(HS.timeLeft), base = mikboxBase();
+    // Router knows the play time left (limit-uptime); the validity end lives in the user comment, read via MikBoX.
+    var left = seconds(HS.timeLeft), base = mikboxBase(), ask = !!(base && HS.username);
     var rows = [
-      ['Sisa waktu', left !== null ? duration(left) : (base && HS.username ? '…' : ''), '', 'timeLeft'],
-      ['Sisa kuota', HS.bytesLeft === 'unlimited' ? 'Tanpa batas' : HS.bytesLeft], ['Lama terhubung', HS.uptime ? duration(seconds(HS.uptime)) : ''],
+      [ask ? 'Sisa waktu main' : 'Sisa waktu', left !== null ? duration(left) : ''],
+      [left !== null ? 'Masa aktif' : 'Sisa waktu', ask ? '…' : '', '', 'timeLeft'],
+      ['Sisa kuota', HS.bytesLeft === 'unlimited' ? '' : HS.bytesLeft], ['Lama terhubung', HS.uptime ? duration(seconds(HS.uptime)) : ''],
       ['Unduh / Unggah', HS.bytesOut && HS.bytesIn ? bytes(HS.bytesOut) + ' / ' + bytes(HS.bytesIn) : ''], ['IP', HS.ip, '', '', 'mono'], ['MAC', HS.mac, '', '', 'mono']
     ];
     $('stats').innerHTML = rows.filter(function (r) { return r[1]; }).map(function (r) {
       return '<div class="stat' + (r[2] ? ' wide' : '') + '"' + (r[3] ? ' id="' + r[3] + '"' : '') + '><small>' + r[0] + '</small><b' + (r[4] ? ' class="' + r[4] + '"' : '') + '>' + esc(r[1]) + '</b></div>';
     }).join('');
-    if (left === null && base && HS.username) loadTimeLeft(base, 0);
+    evenStats();
+    if (ask) loadTimeLeft(base, 0);
     var copy = $('copyBtn');
     copy.innerHTML = svg('copy') + 'Salin kode';
     copy.onclick = function () {
