@@ -34,6 +34,16 @@ var CONFIG = {
     // Daftar paket & harga diambil otomatis dari MikBoX, tidak perlu ditulis di sini.
   },
 
+  /* ---------- Info / tanya jawab di bawah halaman login ([] = disembunyikan) ---------- */
+  judulInfo: "Info & tanya jawab",
+  info: [
+    // judul diisi = pertanyaan yang bisa diketuk untuk membuka jawabannya (FAQ)
+    // judul ""    = teks biasa (pengumuman, aturan, jam operasional, dll). Baris baru: \n
+    { judul: "Bagaimana cara beli voucher?", isi: "Pilih paket di atas, bayar QRIS dari aplikasi bank atau e-wallet apa saja, voucher langsung aktif." },
+    { judul: "Di mana melihat sisa waktu?", isi: "Saat terhubung, buka http://wi.fi untuk melihat kode voucher dan sisa waktunya." },
+    { judul: "", isi: "Gunakan internet dengan bijak. Terima kasih." },
+  ],
+
   /* ---------- Kontak ("" = disembunyikan) ---------- */
   whatsapp: "",                      // contoh: "6281234567890"
   instagram: "",                     // contoh: "https://instagram.com/namaakun"

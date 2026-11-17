@@ -8,7 +8,7 @@ dengan **MikBoX** untuk jual voucher online lewat QRIS. Tanpa lisensi pihak keti
 
 | File | Fungsi |
 |---|---|
-| `config.js` | **Satu-satunya file yang perlu diedit** (nama, warna, kontak, MikBoX) |
+| `config.js` | **Satu-satunya file yang perlu diedit** (nama, warna, info/FAQ, kontak, MikBoX) |
 | `login.html` | Login voucher / member, tombol Coba gratis (trial), daftar paket + tombol Beli (otomatis dari MikBoX) |
 | `status.html` | Kode voucher yang sedang dipakai, sisa waktu/kuota, tombol Salin & Logout |
 | `logout.html`, `alogin.html`, `error.html` | Halaman setelah logout / berhasil login / error |

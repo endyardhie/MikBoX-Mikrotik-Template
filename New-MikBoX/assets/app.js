@@ -17,6 +17,7 @@
     clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
     bolt: '<path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>',
     search: '<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>',
+    chevron: '<path d="M6 9l6 6 6-6"/>',
     info: '<circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/>',
     check: '<path d="M20 6L9 17l-5-5"/>',
     x: '<path d="M18 6L6 18M6 6l12 12"/>',
@@ -79,6 +80,16 @@
       social.innerHTML = links.map(function (l) {
         return '<a href="' + esc(l[0]) + '" target="_blank" rel="noopener" aria-label="' + l[2] + '">' + svg(l[1]) + '</a>';
       }).join('');
+    }
+    var info = $('info'), items = C.info || [];
+    if (info && items.length) {
+      $('infoTitle').textContent = C.judulInfo || 'Informasi';
+      $('infoList').innerHTML = items.map(function (it) {
+        return it.judul
+          ? '<details class="faq"><summary>' + esc(it.judul) + svg('chevron') + '</summary><p>' + esc(it.isi) + '</p></details>'
+          : '<p class="info-text">' + esc(it.isi) + '</p>';
+      }).join('');
+      info.hidden = false;
     }
     var foot = $('foot');
     if (foot) foot.textContent = C.footer ? '© ' + new Date().getFullYear() + ' ' + C.footer : '';
@@ -212,6 +223,13 @@
       })
       .catch(function () { setTimeLeft(''); });
   }
+  // 1536000 → "1M": whole numbers, one-letter units, so the stat fits one line.
+  function bytes(n) {
+    n = +n; if (!isFinite(n)) return '';
+    var u = ['B', 'K', 'M', 'G', 'T'], i = 0;
+    while (n >= 1000 && i < u.length - 1) { n /= 1024; i++; }
+    return Math.round(n) + u[i];
+  }
   function rupiah(n) { return 'Rp' + String(n | 0).replace(/\B(?=(\d{3})+(?!\d))/g, '.'); }
 
   /* ---------- status page ---------- */
@@ -222,10 +240,10 @@
     var rows = [
       ['Sisa waktu', left !== null ? duration(left) : (base && HS.username ? '…' : ''), '', 'timeLeft'],
       ['Sisa kuota', HS.bytesLeft === 'unlimited' ? 'Tanpa batas' : HS.bytesLeft], ['Lama terhubung', HS.uptime ? duration(seconds(HS.uptime)) : ''],
-      ['Unduh / Unggah', HS.bytesOut && HS.bytesIn ? HS.bytesOut + ' / ' + HS.bytesIn : ''], ['IP', HS.ip], ['MAC', HS.mac, 'wide']
+      ['Unduh / Unggah', HS.bytesOut && HS.bytesIn ? bytes(HS.bytesOut) + ' / ' + bytes(HS.bytesIn) : ''], ['IP', HS.ip, '', '', 'mono'], ['MAC', HS.mac, '', '', 'mono']
     ];
     $('stats').innerHTML = rows.filter(function (r) { return r[1]; }).map(function (r) {
-      return '<div class="stat' + (r[2] ? ' wide' : '') + '"' + (r[3] ? ' id="' + r[3] + '"' : '') + '><small>' + r[0] + '</small><b>' + esc(r[1]) + '</b></div>';
+      return '<div class="stat' + (r[2] ? ' wide' : '') + '"' + (r[3] ? ' id="' + r[3] + '"' : '') + '><small>' + r[0] + '</small><b' + (r[4] ? ' class="' + r[4] + '"' : '') + '>' + esc(r[1]) + '</b></div>';
     }).join('');
     if (left === null && base && HS.username) loadTimeLeft(base, 0);
     var copy = $('copyBtn');

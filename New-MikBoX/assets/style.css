@@ -98,7 +98,7 @@ a { color: var(--on-primary-soft); }
 .voucher-box { text-align: center; padding: 16px; border-radius: 20px; background: var(--primary-soft); margin-bottom: 14px; }
 .voucher-box small { display: block; color: var(--on-primary-soft); font-weight: 700; font-size: 12.5px; text-transform: uppercase; letter-spacing: .06em; }
 .voucher-box strong { display: block; font: 800 30px/1.25 ui-monospace, Menlo, Consolas, monospace; letter-spacing: .1em; color: var(--on-primary-soft); margin-top: 4px; word-break: break-all; }
-.stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+.stats { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px; margin-bottom: 14px; }
 .stat { padding: 12px 14px; border-radius: 18px; background: var(--muted-bg); }
 .stat small { display: block; color: var(--muted); font-size: 12.5px; font-weight: 600; }
 .stat b { display: block; font-size: 16px; margin-top: 2px; word-break: break-word; }
@@ -118,3 +118,16 @@ a { color: var(--on-primary-soft); }
 
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 @media (max-width: 360px) { .wrap { padding: 12px 12px 24px; } .card { padding: 18px 16px; } .brand h1 { font-size: 18px; } }
+
+/* ---------- info / FAQ (config.js → info) ---------- */
+.faq { border-top: 1px solid var(--border); }
+.faq:first-child { border-top: 0; }
+.faq summary { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 48px; padding: 6px 2px; font-weight: 700; font-size: 14.5px; cursor: pointer; list-style: none; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary svg { width: 18px; height: 18px; flex: none; color: var(--muted); transition: transform .18s; }
+.faq[open] summary svg { transform: rotate(180deg); }
+.faq p, .info-text { margin: 0 0 12px; padding: 0 2px; color: var(--muted); font-size: 14px; white-space: pre-line; }
+.faq + .info-text { border-top: 1px solid var(--border); padding-top: 12px; }
+.stat b.mono { font-size: 12.5px; font-weight: 700; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.stat:has(b.mono) { padding-left: 12px; padding-right: 10px; }
+@media (max-width: 400px) { .stats { gap: 8px; } }   /* IP/MAC: one line on most phones, wraps rather than clipping on tiny ones */
